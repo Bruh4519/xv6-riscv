@@ -22,6 +22,6 @@ Comprobamos que esta funciona usando comandos como
 ls
 echo Hola mundo
 
-Para poder salir de xv6 tenemos que tocas las teclas Ctrl + A + X a la vez
+Para poder salir de xv6 tenemos que tocas las teclas Ctrl + A, soltamos Ctrl y mientras mantemos pulsada la A apretamos también X
 Listo! Puedes instalar y correr xv6 correctamente
 Se adjuntan imagenes en webc donde se muestra que el programa corre
