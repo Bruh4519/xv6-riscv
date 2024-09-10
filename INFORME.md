@@ -2,7 +2,9 @@ Se asume que se siguieron todos los pasos de la tarea 0
 
 Primero que todo tenemos que meternos a la carpeta y Kernel e irnos al archivo syscall y añadirle lo siguiente:
 
+//
 #define SYS_getppid 22
+//
 
 22 es el próximo número no utilizado por el archivo, reemplazar en por el siguiente no utlizado de ser necesario
 
