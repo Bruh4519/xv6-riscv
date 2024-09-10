@@ -58,6 +58,13 @@ procinit(void)
   }
 }
 
+int
+sys_getppid(void)
+{
+    struct proc *p = myproc();  // Obtén el proceso actual
+    return p->parent ? p->parent->pid : 0;  // Si tiene un padre, devuelve su PID
+}
+
 // Must be called with interrupts disabled,
 // to prevent race with process being moved
 // to a different CPU.
