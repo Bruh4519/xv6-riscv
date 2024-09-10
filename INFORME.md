@@ -1,27 +1,40 @@
-Para realizar el proceso, es necesario abrir la powershell y después escribir wsl para meterte al ubuntu de tu PC
-Luego de esto corres comandos para asegurar que tienes todo el día, los comandos serían:
+Se asume que se siguieron todos los pasos de la tarea 0
 
-sudo apt update
-sudo apt upgrade
-sudo apt install git build-essential qemu-system
+Primero que todo tenemos que meternos a la carpeta y Kernel e irnos al archivo syscall y añadirle lo siguiente:
 
-Luego de asegurarnos que todo esté al día, ponemos el siguiente comando para poder clonar xv6:
+#define SYS_getppid 22
 
-git clone https://github.com/otrab/xv6-riscv.git
+22 es el próximo número no utilizado por el archivo, reemplazar en por el siguiente no utlizado de ser necesario
 
-Luego debemos ingresar a la carpeta clonada con el siguiente comando:
+Ahora en el archivo proc.h declaramos la función sys_getppid
 
-cd xv6-riscv
+Luego dentro del archivo proc.c debemos agregar la implementación de la función sys_getppid()
 
-Luego podemos compilar y empezar a utiliza xv6, esto lo hacemos utilizando el siguiente comando:
+//
+struct proc *p = myproc();
 
-make qemu
+return p -> parent ? p -> parent -> pid : 0;
+//
 
-Comprobamos que esta funciona usando comandos como
+Esto obtiene el proceso actual, y si tiene un padre, devuelve su PID
 
-ls
-echo Hola mundo
+Luego, dentro de syscall.c agregamos el prototipo de la función
 
-Para poder salir de xv6 tenemos que tocas las teclas Ctrl + A, soltamos Ctrl y mientras mantemos pulsada la A apretamos también X
-Listo! Puedes instalar y correr xv6 correctamente
-Se adjuntan imagenes en webc donde se muestra que el programa corre
+Después creamos un archivo que será la envoltura y que hará el llamado al sistema
+
+Creamos un archivo para poder testear
+
+//
+#include "kernel/types.h"
+#include "user/user.h"
+
+int
+main(void)
+{
+    int ppid = getppid();
+    printf("Parent PID: %d\n", ppid);
+    exit(0);
+}
+//
+
+Finalmente compilamos xv6 y podemos probar que funcione ejecutando el programa que invoca el getppid
