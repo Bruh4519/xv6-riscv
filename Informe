@@ -1,0 +1,13 @@
+# Sistema de Prioridades en xv6
+
+## Funcionalidad
+Este proyecto implementa un sistema de programación basado en prioridades en xv6. Cada proceso tiene un campo de prioridad y un campo de boost, que se ajustan durante la ejecución del sistema.
+
+## Modificaciones
+1. Se agregaron dos campos (`prioridad` y `boost`) en la estructura `proc`.
+2. Se modificó el programador de procesos para seleccionar el proceso con la prioridad más alta.
+3. Se implementó una lógica de ajuste de prioridad basada en el boost.
+4. Se creó un programa de prueba que genera 20 procesos, mostrando información en pantalla.
+
+## Dificultades
+Uno de los desafíos principales fue asegurar que los procesos RUNNABLE incrementaran sus prioridades correctamente sin afectar el rendimiento general del sistema. Además, manejar correctamente los límites de la prioridad y el cambio de boost resultó ser clave para evitar que los procesos quedaran bloqueados en valores incorrectos.
