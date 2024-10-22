@@ -456,7 +456,27 @@ scheduler(void)
     // turned off; enable them to avoid a deadlock if all
     // processes are waiting.
     intr_on();
+    
+    p_prioridad_alta = 0;
+    for(p = proc; p < &proc[NPROC]; p++) {
+      if(p->state == RUNNABLE) {
+        if(p_prioridad_alta == 0 || p->prioridad < p_prioridad_alta->prioridad) {
+          p_prioridad_alta = p;
+        }
+      }
+    }
 
+    // Si se encontró un proceso RUNNABLE
+    if(p_prioridad_alta != 0) {
+      p = p_prioridad_alta;
+      p->state = RUNNING;
+      swtch(&c->context, &p->context);
+      // Volver al estado RUNNABLE después de ejecutar
+      p->state = RUNNABLE;
+
+      // Incrementar las prioridades de todos los procesos RUNNABLE
+      boostear_procesos();
+    }
     int found = 0;
     for(p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
