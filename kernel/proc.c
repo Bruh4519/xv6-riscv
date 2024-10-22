@@ -112,6 +112,8 @@ allocproc(void)
   struct proc *p;
 
   for(p = proc; p < &proc[NPROC]; p++) {
+    p->prioridad = 0;  // Inicializar prioridad en 0
+    p->boost = 1;      // Inicializar boost en 1
     acquire(&p->lock);
     if(p->state == UNUSED) {
       goto found;
@@ -445,6 +447,7 @@ void
 scheduler(void)
 {
   struct proc *p;
+  struct proc *p_prioridad_alta;
   struct cpu *c = mycpu();
 
   c->proc = 0;
@@ -691,5 +694,23 @@ procdump(void)
       state = "???";
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
+  }
+}
+
+
+void 
+boostear_procesos(void) {
+  struct proc *p;
+  for(p = proc; p < &proc[NPROC]; p++) {
+    if(p->state == RUNNABLE) {
+      p->prioridad += p->boost;
+
+      // Cambiar el boost si la prioridad alcanza los límites
+      if(p->prioridad >= 9) {
+        p->boost = -1;
+      } else if(p->prioridad <= 0) {
+        p->boost = 1;
+      }
+    }
   }
 }
