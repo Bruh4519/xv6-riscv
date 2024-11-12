@@ -16,3 +16,7 @@ int munprotect(void *addr, int len);
 ´´´
 
 Finalmente se implemntó un archivo test.c que usa las nuevas syscalls para probar su funcionamiento
+
+Problemas:
+
+Al formatear mi pc perdí el toolchain y esto me provocó problemas ya que no lograba instalarlo correctamente en mi wsl, pero finalmente se logró solucionar y correr bien el programa
