@@ -3,12 +3,16 @@ Se modificó xv6 para implementar un sistema de protección de memoria que permi
 Primero en  syscall.h se agregaron las definiciones de las syscalls SYS_mprotect y SYS_munprotect.
 Definimos las funciones sys_mprotect y sys_munprotect para manejar la extracción y validación de los argumentos antes de llamar a las funciones correspondientes en proc.c:
 
-''uint64 sys_mprotect(void);
-uint64 sys_munprotect(void);''
+´´´
+uint64 sys_mprotect(void);
+uint64 sys_munprotect(void);
+´´´
 
 Se implementaron las funciones mprotect y munprotect en proc.c que recorren la tabla de páginas, modificando las entradas para ajustar los permisos de las páginas de memoria:
 
-''int mprotect(void *addr, int len);
-int munprotect(void *addr, int len);''
+´´´
+int mprotect(void *addr, int len);
+int munprotect(void *addr, int len);
+´´´
 
 Finalmente se implemntó un archivo test.c que usa las nuevas syscalls para probar su funcionamiento
