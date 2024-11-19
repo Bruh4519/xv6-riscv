@@ -93,13 +93,68 @@ int
 allocpid()
 {
   int pid;
-  
+
   acquire(&pid_lock);
   pid = nextpid;
   nextpid = nextpid + 1;
   release(&pid_lock);
 
   return pid;
+}
+
+// Se define la funcion mprotect
+int
+mprotect(void *addr, int len)
+{
+  struct proc *p = myproc();
+  uint64 va = (uint64) addr;
+  for (uint64 a = va; a < va + len; a += PGSIZE) {
+      pte_t *pte = walk(p->pagetable, a, 0);
+      if (pte == 0 || (*pte & PTE_V) == 0) {
+          return -1;
+      }
+      if (*pte & PTE_W) {
+          printf("Pagina en 0x%lx se puede escribir\n", a);
+      } else {
+          printf("Pagina en 0x%lx solo se puede leer\n", a);
+      }
+      *pte &= ~PTE_W;
+      if (*pte & PTE_W) {
+          printf("Pagina en 0x%lx se puede escribir\n", a);
+      } else {
+          printf("Pagina en 0x%lx solo se puede leer\n", a);
+      }
+  }
+  sfence_vma(); 
+  return 0;
+}
+
+
+// Se define la funcion munprotect
+int
+munprotect(void *addr, int len)
+{
+  struct proc *p = myproc();
+  uint64 va = (uint64) addr;
+  for (uint64 a = va; a < va + len; a += PGSIZE) {
+      pte_t *pte = walk(p->pagetable, a, 0);
+      if (pte == 0 || (*pte & PTE_V) == 0) {
+          return -1; 
+      }
+      if (*pte & PTE_W) {
+          printf("Pagina en 0x%lx es ahora escribible\n", a);
+      } else {
+          printf("Pagina en 0x%lx solo se puede leer\n", a);
+      }
+      *pte |= PTE_W;
+      if (*pte & PTE_W) {
+          printf("Pagina en 0x%lx es ahora escribible\n", a);
+      } else {
+          printf("Pagina en 0x%lx solo se puede leer\n", a);
+      }
+  }
+  sfence_vma(); 
+  return 0;
 }
 
 // Look in the process table for an UNUSED proc.
@@ -122,6 +177,8 @@ allocproc(void)
   return 0;
 
 found:
+  p->prioridad = 0;
+  p->boost = 1;
   p->pid = allocpid();
   p->state = USED;
 
@@ -458,6 +515,16 @@ scheduler(void)
     for(p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
       if(p->state == RUNNABLE) {
+
+
+
+	p->prioridad += p->boost;
+	if (p->prioridad >= 9) {
+	  p->boost = -1;
+	}
+	if (p->prioridad <= 0) {
+	  p->boost = 1;
+	}
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it
         // before jumping back to us.
