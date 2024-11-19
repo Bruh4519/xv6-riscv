@@ -1,25 +1,22 @@
-#Resuemen
-Se modificó xv6 para implementar un sistema de protección de memoria que permita marcar regiones de memoria como solo lectura.
+A continuación se mostrará el proceso hecho para realizar la T3, donde se podrá notar el la creación y llamado a la función test_protect. Así, se logro implementar las funciones mprotect y munprotect., donde cada funcion tendra su región de memoria y largo.
 
 
-##Procedimiento
-Primero en  syscall.h se agregaron las definiciones de las syscalls SYS_mprotect y SYS_munprotect.
-Definimos las funciones sys_mprotect y sys_munprotect para manejar la extracción y validación de los argumentos antes de llamar a las funciones correspondientes en proc.c:
 
-´´´
-uint64 sys_mprotect(void);
-uint64 sys_munprotect(void);
-´´´
+Para la realización de esta función se tuvieron que modificar archivos del kernel y del del usuario.
 
-Se implementaron las funciones mprotect y munprotect en proc.c que recorren la tabla de páginas, modificando las entradas para ajustar los permisos de las páginas de memoria:
+##Kernel:
 
-´´´
-int mprotect(void *addr, int len);
-int munprotect(void *addr, int len);
-´´´
+proc.c: Se define la función mprotect int mprotect y la función munprotect int munprotect para luego ya ser llamados.
+proc.h: En este archivo añadiremos las funciones anteriores pero para definirlas, la cual es int mprotect e int munprotect
+syscall.c: En este archivo se define para ambas funciones los sys_mprotect y sys_munprotect. 
+syscall.h: En este archivo debemos definir las variables previamente mencionadas la cual es #define SYS_mprotect 23 y #define SYS_munprotect 24
+Makefile: Definimos la función de test protect.
 
-Finalmente se implemntó un archivo test.c que usa las nuevas syscalls para probar su funcionamiento
+##User:
 
-##Problemas:
+user.h: Se definen las funciones mprotect y munprotect
+usys.pl: Se define tanto entry("mprotect"); y entry("munprotect");
+Además de la creacion de un archivo para la funcion el cual sería test_protect.c, donde se implementará el codigo con las funciones mprotect y munprotect
 
-Al formatear mi pc perdí el toolchain y esto me provocó problemas ya que no lograba instalarlo correctamente en mi wsl, pero finalmente se logró solucionar y correr bien el programa
+
+Finalmente será posible correr la funcion test_protect luego de correr make qemu.
