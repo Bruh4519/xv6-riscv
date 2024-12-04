@@ -3,8 +3,8 @@ Para poder realizar esta tarea se realizaron las siguientes modificaciones:
 
 Dentro de types.h definimos message
 En proc.c creamos el queue de los mensajes.
-En syscall.h definimos sys send y sys receive.
 En syscall.c declaramos las funciones.
+En syscall.h definimos sys send y sys receive.
 También declaramos las funciones en user.h
 Luego en sysproc.c creamos las llamadas.
 Creamos el archivo testipc.c para poder probar todo esto.
